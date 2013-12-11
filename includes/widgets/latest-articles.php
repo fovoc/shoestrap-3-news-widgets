@@ -32,6 +32,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$taxonomy  = $instance['taxonomy'];
 		$term      = $instance['term'];
 		$num       = $instance['num'];
+		$offset    = $instance['offset'];
 		$thumb     = $instance['thumb'];
 		$more      = $instance['more'];
 		$meta      = $instance['meta'];
@@ -74,6 +75,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$instance['taxonomy']  = strip_tags( $new_instance['taxonomy'] );
 		$instance['term']      = strip_tags( $new_instance['term'] );
 		$instance['num']       = strip_tags( $new_instance['num'] );
+		$instance['offset']    = strip_tags( $new_instance['offset'] );
 		$instance['thumb']     = isset( $new_instance['thumb'] );
 		$instance['meta']      = isset( $new_instance['meta'] );
 		$instance['more']      = isset( $new_instance['more'] );
@@ -90,6 +92,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			'taxonomy'  => 'category',
 			'term'      => 'shoestrap_nw_all_terms',
 			'num'       => 5,
+			'offset'    => 0,
 			'thumb'     => true,
 			'more'      => true,
 			'meta'      => true,
@@ -173,8 +176,13 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			<?php endif; ?>
 
 			<tr>
-				<td><?php _e( 'Number of Articles to display','shoestrap_nw'); ?></td>
+				<td><?php _e( 'Number of Posts to display','shoestrap_nw'); ?></td>
 				<td><input id="<?php echo $this->get_field_id( 'num' ); ?>" name="<?php echo $this->get_field_name( 'num' ); ?>" value="<?php echo $instance['num']; ?>"/></td>
+			</tr>
+
+			<tr>
+				<td><?php _e( 'Offset','shoestrap_nw'); ?></td>
+				<td><input id="<?php echo $this->get_field_id( 'num' ); ?>" name="<?php echo $this->get_field_name( 'offset' ); ?>" value="<?php echo $instance['offset']; ?>"/></td>
 			</tr>
 
 			<tr>
@@ -202,7 +210,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	}
 }
 
-function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '' $posts_per_page = 5, $offset = 0 ) {
+function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0 ) {
 
 	// Start the arguments
 	$args = array(
