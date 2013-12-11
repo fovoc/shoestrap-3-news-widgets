@@ -100,12 +100,10 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 		$instance = wp_parse_args( ( array ) $instance, $defaults ); ?>
 
-		<table class="shoestrap_3_news_widget_settings_table">
-			<tr>
-				<td><?php _e( 'Title:','shoestrap_nw'); ?></td>
-				<td><input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" style="width:160px" /></td>
-			</tr>
+		<?php _e( 'Title:','shoestrap_nw'); ?>
+		<input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" class="widefat" type="text" /></td>
 
+		<table style="margin-top: 10px;">
 			<tr>
 				<td><?php _e( 'Format:','shoestrap_nw'); ?></td>
 				<td>
@@ -175,12 +173,12 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 			<tr>
 				<td><?php _e( 'Number of Posts to display','shoestrap_nw'); ?></td>
-				<td><input id="<?php echo $this->get_field_id( 'per_page' ); ?>" name="<?php echo $this->get_field_name( 'per_page' ); ?>" value="<?php echo $instance['per_page']; ?>"/></td>
+				<td><input id="<?php echo $this->get_field_id( 'per_page' ); ?>" name="<?php echo $this->get_field_name( 'per_page' ); ?>" value="<?php echo $instance['per_page']; ?>" type="number" /></td>
 			</tr>
 
 			<tr>
 				<td><?php _e( 'Offset','shoestrap_nw'); ?></td>
-				<td><input id="<?php echo $this->get_field_id( 'per_page' ); ?>" name="<?php echo $this->get_field_name( 'offset' ); ?>" value="<?php echo $instance['offset']; ?>"/></td>
+				<td><input id="<?php echo $this->get_field_id( 'per_page' ); ?>" name="<?php echo $this->get_field_name( 'offset' ); ?>" value="<?php echo $instance['offset']; ?>" type="number" /></td>
 			</tr>
 
 			<tr>
