@@ -3,7 +3,7 @@
 if ( !function_exists( 'shoestrap_nw_licensing' ) ) :
 function shoestrap_nw_licensing($section) {
 	$section['fields'][] = array( 
-		'title'            => __( 'Shoestrap News Widgets Licence', 'shoestrap' ),
+		'title'            => __( 'Shoestrap News Widgets Licence', 'shoestrap_nw' ),
 		'id'              => 'shoestrap_nw_license_key',
 		'default'         => '',
 		'type'            => 'edd_license',
