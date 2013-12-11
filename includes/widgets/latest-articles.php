@@ -27,16 +27,18 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 		extract( $args );
 
-		$title     = apply_filters( 'widget_title', $instance['title'] );
-		$post_type = $instance['post_type'];
-		$taxonomy  = $instance['taxonomy'];
-		$term      = $instance['term'];
-		$per_page  = $instance['per_page'];
-		$offset    = $instance['offset'];
-		$thumb     = $instance['thumb'];
-		$more      = $instance['more'];
-		$meta      = $instance['meta'];
-		$format    = $instance['format'];
+		$title        = apply_filters( 'widget_title', $instance['title'] );
+		$post_type    = $instance['post_type'];
+		$taxonomy     = $instance['taxonomy'];
+		$term         = $instance['term'];
+		$per_page     = $instance['per_page'];
+		$offset       = $instance['offset'];
+		$thumb        = $instance['thumb'];
+		$thumb_width  = $instance['thumb_width'];
+		$thumb_height = $instance['thumb_height'];
+		$more         = $instance['more'];
+		$meta         = $instance['meta'];
+		$format       = $instance['format'];
 
 		echo $before_widget;
 
@@ -56,7 +58,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		?>
 
 		<div class="post-list list clearfix">
-			<?php shoestrap_nw_posts_loop( $instance['post_type'], $instance['taxonomy'], $instance['term'], $instance['per_page'], $instance['offset'] ); ?>
+			<?php shoestrap_nw_posts_loop( $instance['post_type'], $instance['taxonomy'], $instance['term'], $instance['per_page'], $instance['offset'], $instance['format'], $instance['thumb'] ); ?>
 		</div>
 		<?php
 
@@ -68,16 +70,18 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$instance = $old_instance;
 
 		/* Strip terms (if needed) and update the widget settings. */
-		$instance['title']     = strip_tags( $new_instance['title'] );
-		$instance['post_type'] = strip_tags( $new_instance['post_type'] );
-		$instance['taxonomy']  = strip_tags( $new_instance['taxonomy'] );
-		$instance['term']      = strip_tags( $new_instance['term'] );
-		$instance['per_page']  = strip_tags( $new_instance['per_page'] );
-		$instance['offset']    = strip_tags( $new_instance['offset'] );
-		$instance['thumb']     = isset( $new_instance['thumb'] );
-		$instance['meta']      = isset( $new_instance['meta'] );
-		$instance['more']      = isset( $new_instance['more'] );
-		$instance['format']    = strip_tags( $new_instance['format'] );
+		$instance['title']        = strip_tags( $new_instance['title'] );
+		$instance['post_type']    = strip_tags( $new_instance['post_type'] );
+		$instance['taxonomy']     = strip_tags( $new_instance['taxonomy'] );
+		$instance['term']         = strip_tags( $new_instance['term'] );
+		$instance['per_page']     = strip_tags( $new_instance['per_page'] );
+		$instance['offset']       = strip_tags( $new_instance['offset'] );
+		$instance['thumb']        = isset( $new_instance['thumb'] );
+		$instance['thumb_width']  = strip_tags( $new_instance['thumb_width'] );
+		$instance['thumb_height'] = strip_tags( $new_instance['thumb_height'] );
+		$instance['meta']         = isset( $new_instance['meta'] );
+		$instance['more']         = isset( $new_instance['more'] );
+		$instance['format']       = strip_tags( $new_instance['format'] );
 
 		return $instance;
 	}
@@ -85,17 +89,19 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	function form( $instance ) {
 
 		$defaults = array(
-			'title'     => 'Latest Articles',
-			'post_type' => 'post',
-			'taxonomy'  => 'category',
-			'term'      => 'shoestrap_nw_all_terms',
-			'per_page'  => 5,
-			'offset'    => 0,
-			'thumb'     => true,
-			'more'      => true,
-			'meta'      => true,
-			'overlay'   => false,
-			'format'    => 'first'
+			'title'        => 'Latest Articles',
+			'post_type'    => 'post',
+			'taxonomy'     => 'category',
+			'term'         => 'shoestrap_nw_all_terms',
+			'per_page'     => 5,
+			'offset'       => 0,
+			'thumb'        => true,
+			'thumb_width'  => 150,
+			'thumb_height' => 100,
+			'more'         => true,
+			'meta'         => true,
+			'overlay'      => false,
+			'format'       => 'first'
 		);
 
 		$instance = wp_parse_args( ( array ) $instance, $defaults ); ?>
@@ -195,6 +201,18 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 				</td>
 			</tr>
 
+			<?php if ( $instance['thumb'] ) : ?>
+				<tr>
+					<td><?php _e( 'Thumbnail Width','shoestrap_nw'); ?></td>
+					<td><input id="<?php echo $this->get_field_id( 'thumb_width' ); ?>" name="<?php echo $this->get_field_name( 'thumb_width' ); ?>" value="<?php echo $instance['thumb_width']; ?>" type="number" /></td>
+				</tr>
+
+				<tr>
+					<td><?php _e( 'Thumbnail Height','shoestrap_nw'); ?></td>
+					<td><input id="<?php echo $this->get_field_id( 'thumb_height' ); ?>" name="<?php echo $this->get_field_name( 'thumb_height' ); ?>" value="<?php echo $instance['thumb_height']; ?>" type="number" /></td>
+				</tr>
+			<?php endif; ?>
+
 			<tr>
 				<td colspan="2">
 					<input class="checkbox" type="checkbox" <?php checked(isset( $instance['meta']) ? $instance['meta'] : 0  ); ?> id="<?php echo $this->get_field_id( 'meta' ); ?>" name="<?php echo $this->get_field_name( 'meta' ); ?>" />
@@ -206,7 +224,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	}
 }
 
-function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0 ) {
+function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0, $format = 'titles', $thumb = false, $thumb_width = 150, $thumb_height = 100 ) {
 
 	// Set-Up the taxonomy query
 	if ( $term != 'shoestrap_nw_all_terms' ) :
@@ -236,7 +254,26 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 	$i = 0;
 	while ( $the_query->have_posts() ) : $i++;
 		$the_query->the_post();
-		echo '<li>' . get_the_title() . ' ' . $i . '</li>';
+
+		$image_args['width']  = $thumb_width;
+		$image_args['url']    = wp_get_attachment_url( get_post_thumbnail_id() );
+		$image_args['height'] = $thumb_height;
+
+		$image = shoestrap_image_resize( $image_args );
+		?>
+
+		<div class="media">
+			<?php if ( $thumb && has_post_thumbnail() ) : ?>
+				<a class="pull-left" href="<?php the_permalink(); ?>">
+					<img class="media-object" src="<?php echo $image['url']; ?>" alt="<?php the_title(); ?>">
+				</a>
+			<?php endif; ?>
+			<div class="media-body">
+				<h4 class="media-heading"><?php the_title(); ?></h4>
+				<?php the_excerpt(); ?>
+			</div>
+		</div>
+		<?php
 	endwhile;
 
 	/* Restore original Post Data 
