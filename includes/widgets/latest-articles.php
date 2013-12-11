@@ -31,7 +31,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$post_type = $instance['post_type'];
 		$taxonomy  = $instance['taxonomy'];
 		$term      = $instance['term'];
-		$num       = $instance['num'];
+		$per_page  = $instance['per_page'];
 		$offset    = $instance['offset'];
 		$thumb     = $instance['thumb'];
 		$more      = $instance['more'];
@@ -56,9 +56,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		?>
 
 		<div class="post-list list clearfix">
-			<?php
-				shoestrap_nw_posts_loop( $instance['post_type'], $instance['taxonomy'], $instance['term'], $instance['num'], $instance['offset'] );
-			?>
+			<?php shoestrap_nw_posts_loop( $instance['post_type'], $instance['taxonomy'], $instance['term'], $instance['per_page'], $instance['offset'] ); ?>
 		</div>
 		<?php
 
@@ -74,7 +72,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$instance['post_type'] = strip_tags( $new_instance['post_type'] );
 		$instance['taxonomy']  = strip_tags( $new_instance['taxonomy'] );
 		$instance['term']      = strip_tags( $new_instance['term'] );
-		$instance['num']       = strip_tags( $new_instance['num'] );
+		$instance['per_page']  = strip_tags( $new_instance['per_page'] );
 		$instance['offset']    = strip_tags( $new_instance['offset'] );
 		$instance['thumb']     = isset( $new_instance['thumb'] );
 		$instance['meta']      = isset( $new_instance['meta'] );
@@ -91,7 +89,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			'post_type' => 'post',
 			'taxonomy'  => 'category',
 			'term'      => 'shoestrap_nw_all_terms',
-			'num'       => 5,
+			'per_page'  => 5,
 			'offset'    => 0,
 			'thumb'     => true,
 			'more'      => true,
@@ -177,12 +175,12 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 			<tr>
 				<td><?php _e( 'Number of Posts to display','shoestrap_nw'); ?></td>
-				<td><input id="<?php echo $this->get_field_id( 'num' ); ?>" name="<?php echo $this->get_field_name( 'num' ); ?>" value="<?php echo $instance['num']; ?>"/></td>
+				<td><input id="<?php echo $this->get_field_id( 'per_page' ); ?>" name="<?php echo $this->get_field_name( 'per_page' ); ?>" value="<?php echo $instance['per_page']; ?>"/></td>
 			</tr>
 
 			<tr>
 				<td><?php _e( 'Offset','shoestrap_nw'); ?></td>
-				<td><input id="<?php echo $this->get_field_id( 'num' ); ?>" name="<?php echo $this->get_field_name( 'offset' ); ?>" value="<?php echo $instance['offset']; ?>"/></td>
+				<td><input id="<?php echo $this->get_field_id( 'per_page' ); ?>" name="<?php echo $this->get_field_name( 'offset' ); ?>" value="<?php echo $instance['offset']; ?>"/></td>
 			</tr>
 
 			<tr>
@@ -215,14 +213,18 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 	// Start the arguments
 	$args = array(
 		'post_type'      => $post_type,
-		'posts_per_page' => $number,
+		'tax_query'      => array(
+			array(
+				'taxonomy' => $taxonomy,
+				'field'    => 'id',
+				'terms'    => array( $term ),
+			),
+		),
+		'taxonomy'       => $taxonomy,
+		'terms'          => $term,
+		'posts_per_page' => $posts_per_page,
 		'offset'         => $offset,
 	);
-
-	// Add term argument if one is present
-	if ( $term ) :
-		$args['terms'] = $term;
-	endif;
 
 	// The Query
 	$the_query = new WP_Query( $args );
