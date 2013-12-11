@@ -28,8 +28,8 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		extract( $args );
 
 		$title    = apply_filters( 'widget_title', $instance['title'] );
-		$category = $instance['category'];
-		$tag      = $instance['tag'];
+		$taxonomy = $instance['taxonomy'];
+		$term      = $instance['term'];
 		$num      = $instance['num'];
 		$thumb    = $instance['thumb'];
 		$more     = $instance['more'];
@@ -37,13 +37,13 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$format   = $instance['format'];
 
 		// Hack for the 'All Categories' option
-		if ( $category == 'All Categories' ) :
-			$category = '';
+		if ( $taxonomy == 'All Categories' ) :
+			$taxonomy = '';
 		endif;
 		
 		// Hack for the 'All Tags' option
-		if ( $tag == 'All Tags' ) :
-			$tag = '';
+		if ( $term == 'All Tags' ) :
+			$term = '';
 		endif;
 
 		$more = false;
@@ -74,8 +74,8 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 					'order'            => 'DESC',
 					'order_by'         => 'date',
 					'post_type'        => $post_types,
-					'cat'              => $category,
-					'tag_id'           => $tag,
+					'cat'              => $taxonomy,
+					'term_id'           => $term,
 				);
 
 				$format = array(
@@ -100,10 +100,10 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
 
-		/* Strip tags (if needed) and update the widget settings. */
+		/* Strip terms (if needed) and update the widget settings. */
 		$instance['title']    = strip_tags( $new_instance['title'] );
-		$instance['category'] = strip_tags( $new_instance['category'] );
-		$instance['tag']      = strip_tags( $new_instance['tag'] );
+		$instance['taxonomy'] = strip_tags( $new_instance['taxonomy'] );
+		$instance['term']     = strip_tags( $new_instance['term'] );
 		$instance['num']      = strip_tags( $new_instance['num'] );
 		$instance['thumb']    = isset( $new_instance['thumb'] );
 		$instance['meta']     = isset( $new_instance['meta'] );
@@ -117,8 +117,8 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 		$defaults = array(
 			'title'    => 'Latest Articles',
-			'category' => 'All Categories',
-			'tag'      => 'All Tags',
+			'taxonomy' => 'category',
+			'term'     => 'shoestrap_nw_all_terms',
 			'num'      => 5,
 			'thumb'    => true,
 			'more'     => true,
@@ -148,49 +148,38 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			</tr>
 
 			<tr>
-				<td><?php _e( 'Category:','shoestrap_nw'); ?></td>
+				<td><?php _e( 'Taxonomy:','shoestrap_nw'); ?></td>
 				<td>
-					<select name="<?php echo $this->get_field_name( 'category' ); ?>">
-						<?php $selected = ( $instance['category'] == 'All Categories' ) ? 'selected' : ''; ?>
-						<option <?php echo $selected; ?> value="All Categories"><?php _e( 'All Categories', 'shoestrap_nw' ); ?></option>
-						<?php
-							$category_args = array(
-								'orderby'    => 'name',
-								'order'      => 'ASC',
-								'hide_empty' => 0
-							);
-
-							$categories = get_categories( $category_args );
-							foreach ( $categories as $category ) :
-								$selected = ( $instance['category'] == $category->term_id ) ? 'selected' : ''; ?>
-
-								<option <?php echo $selected; ?> value="<?php echo $category->term_id; ?>">
-									<?php echo $category->name; ?>
-								</option>
-							<?php endforeach;
-						?>
+					<select name="<?php echo $this->get_field_name( 'taxonomy' ); ?>">
+						<?php $taxonomies = get_taxonomies( array( 'public' => true ), 'objects' ); ?>
+						<?php foreach ( $taxonomies as $taxonomy ) : ?>
+							<?php $selected = ( $instance['taxonomy'] == $taxonomy->name ) ? 'selected' : ''; ?>
+							<option <?php echo $selected; ?> value="<?php echo $taxonomy->name; ?>">
+								<?php echo $taxonomy->name; ?>
+							</option>
+						<?php endforeach; ?>
 					</select>
 				</td>
 			</tr>
 
 			<tr>
-				<td><?php _e( 'Tag:','shoestrap_nw'); ?></td>
+				<td><?php _e( 'Term:','shoestrap_nw' ); ?></td>
 				<td>
-					<select name="<?php echo $this->get_field_name( 'tag' ); ?>">
-						<?php $selected = ( $instance['tag'] == 'All Tags' ) ? 'selected' : ''; ?>
-						<option <?php echo $selected; ?> value="All Tags"><?php _e( 'All Tags', 'shoestrap_nw' ); ?></option>
+					<select name="<?php echo $this->get_field_name( 'term' ); ?>">
+						<?php $selected = ( $instance['term'] == 'shoestrap_nw_all_terms' ) ? 'selected' : ''; ?>
+						<option <?php echo $selected; ?> value="shoestrap_nw_all_terms"><?php _e( 'All Terms', 'shoestrap_nw' ); ?></option>
 						<?php
-							$tags_args = array(
+							$terms_args = array(
 								'orderby'    => 'name',
 								'order'      => 'ASC',
 								'hide_empty' => 0
 							);
 
-							$tags = get_tags( $tags_args );
+							$terms = get_terms( $instance['taxonomy'], $terms_args );
 
-							foreach ( $tags as $tag ) : ?>
-								<?php $selected = ( $instance['tag']==$tag->term_id ) ? 'selected' : ''; ?>
-								<option <?php echo $selected; ?> value="<?php echo $tag->term_id; ?>"><?php echo $tag->name; ?></option>
+							foreach ( $terms as $term ) : ?>
+								<?php $selected = ( $instance['term']==$term->term_id ) ? 'selected' : ''; ?>
+								<option <?php echo $selected; ?> value="<?php echo $term->term_id; ?>"><?php echo $term->name; ?></option>
 							<?php endforeach; ?>
 					</select>
 				</td>
@@ -224,4 +213,8 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		</table>
 		<?php
 	}
+}
+
+function shoestrap_nw_posts_loop() {
+
 }
