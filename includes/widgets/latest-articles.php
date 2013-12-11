@@ -132,43 +132,45 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 				</td>
 			</tr>
 
-			<tr>
-				<td><?php _e( 'Taxonomy:','shoestrap_nw'); ?></td>
-				<td>
-					<select name="<?php echo $this->get_field_name( 'taxonomy' ); ?>">
-						<?php $taxonomies = get_object_taxonomies( $instance['post_type'], 'objects' ); ?>
-						<?php foreach ( $taxonomies as $taxonomy ) : ?>
-							<?php $selected = ( $instance['taxonomy'] == $taxonomy->name ) ? 'selected' : ''; ?>
-							<option <?php echo $selected; ?> value="<?php echo $taxonomy->name; ?>">
-								<?php echo $taxonomy->name; ?>
-							</option>
-						<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-
-			<tr>
-				<td><?php _e( 'Term:','shoestrap_nw' ); ?></td>
-				<td>
-					<select name="<?php echo $this->get_field_name( 'term' ); ?>">
-						<?php $selected = ( $instance['term'] == 'shoestrap_nw_all_terms' ) ? 'selected' : ''; ?>
-						<option <?php echo $selected; ?> value="shoestrap_nw_all_terms"><?php _e( 'All Terms', 'shoestrap_nw' ); ?></option>
-						<?php
-							$terms_args = array(
-								'orderby'    => 'name',
-								'order'      => 'ASC',
-								'hide_empty' => 0
-							);
-
-							$terms = get_terms( $instance['taxonomy'], $terms_args );
-
-							foreach ( $terms as $term ) : ?>
-								<?php $selected = ( $instance['term']==$term->term_id ) ? 'selected' : ''; ?>
-								<option <?php echo $selected; ?> value="<?php echo $term->term_id; ?>"><?php echo $term->name; ?></option>
+			<?php $taxonomies = get_object_taxonomies( $instance['post_type'], 'objects' ); ?>
+			<?php if ( $taxonomies ) : ?>
+				<tr>
+					<td><?php _e( 'Taxonomy:','shoestrap_nw'); ?></td>
+					<td>
+						<select name="<?php echo $this->get_field_name( 'taxonomy' ); ?>">
+							<?php foreach ( $taxonomies as $taxonomy ) : ?>
+								<?php $selected = ( $instance['taxonomy'] == $taxonomy->name ) ? 'selected' : ''; ?>
+								<option <?php echo $selected; ?> value="<?php echo $taxonomy->name; ?>">
+									<?php echo $taxonomy->name; ?>
+								</option>
 							<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
+						</select>
+					</td>
+				</tr>
+
+				<tr>
+					<td><?php _e( 'Term:','shoestrap_nw' ); ?></td>
+					<td>
+						<select name="<?php echo $this->get_field_name( 'term' ); ?>">
+							<?php $selected = ( $instance['term'] == 'shoestrap_nw_all_terms' ) ? 'selected' : ''; ?>
+							<option <?php echo $selected; ?> value="shoestrap_nw_all_terms"><?php _e( 'All Terms', 'shoestrap_nw' ); ?></option>
+							<?php
+								$terms_args = array(
+									'orderby'    => 'name',
+									'order'      => 'ASC',
+									'hide_empty' => 0
+								);
+
+								$terms = get_terms( $instance['taxonomy'], $terms_args );
+
+								foreach ( $terms as $term ) : ?>
+									<?php $selected = ( $instance['term']==$term->term_id ) ? 'selected' : ''; ?>
+									<option <?php echo $selected; ?> value="<?php echo $term->term_id; ?>"><?php echo $term->name; ?></option>
+								<?php endforeach; ?>
+						</select>
+					</td>
+				</tr>
+			<?php endif; ?>
 
 			<tr>
 				<td><?php _e( 'Number of Articles to display','shoestrap_nw'); ?></td>
