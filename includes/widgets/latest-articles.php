@@ -208,16 +208,21 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0 ) {
 
+	// Set-Up the taxonomy query
+	if ( $term != 'shoestrap_nw_all_terms' ) :
+		$tax_query = array( array(
+			'taxonomy' => $taxonomy,
+			'field'    => 'id',
+			'terms'    => array( $term ),
+		) );
+	else :
+		$tax_query = '';
+	endif;
+
 	// Start the arguments
 	$args = array(
 		'post_type'      => $post_type,
-		'tax_query'      => array(
-			array(
-				'taxonomy' => $taxonomy,
-				'field'    => 'id',
-				'terms'    => array( $term ),
-			),
-		),
+		'tax_query'      => $tax_query,
 		'taxonomy'       => $taxonomy,
 		'terms'          => $term,
 		'posts_per_page' => $posts_per_page,
@@ -228,9 +233,10 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 	$the_query = new WP_Query( $args );
 
 	// The Loop
-	while ( $the_query->have_posts() ) :
+	$i = 0;
+	while ( $the_query->have_posts() ) : $i++;
 		$the_query->the_post();
-		echo '<li>' . get_the_title() . '</li>';
+		echo '<li>' . get_the_title() . ' ' . $i . '</li>';
 	endwhile;
 
 	/* Restore original Post Data 
