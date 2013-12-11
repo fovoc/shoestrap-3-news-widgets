@@ -202,18 +202,24 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			</tr>
 
 			<tr>
-				<td><?php _e( 'Display "See All" link in header','shoestrap_nw'); ?></td>
-				<td><input class="checkbox" type="checkbox" <?php checked( isset( $instance['more'] ) ? $instance['more'] : 0  ); ?> id="<?php echo $this->get_field_id( 'more' ); ?>" name="<?php echo $this->get_field_name( 'more' ); ?>" /></td>
+				<td colspan="2">
+					<input class="checkbox" type="checkbox" <?php checked( isset( $instance['more'] ) ? $instance['more'] : 0  ); ?> id="<?php echo $this->get_field_id( 'more' ); ?>" name="<?php echo $this->get_field_name( 'more' ); ?>" />
+					<?php _e( 'Display "See All" link in header','shoestrap_nw'); ?>
+				</td>
 			</tr>
 
 			<tr>
-				<td><?php _e( 'Display thumbs','shoestrap_nw'); ?></td>
-				<td><input class="checkbox" type="checkbox" <?php checked(isset( $instance['thumb']) ? $instance['thumb'] : 0  ); ?> id="<?php echo $this->get_field_id( 'thumb' ); ?>" name="<?php echo $this->get_field_name( 'thumb' ); ?>" /></td>
+				<td colspan="2">
+					<input class="checkbox" type="checkbox" <?php checked(isset( $instance['thumb']) ? $instance['thumb'] : 0  ); ?> id="<?php echo $this->get_field_id( 'thumb' ); ?>" name="<?php echo $this->get_field_name( 'thumb' ); ?>" />
+					<?php _e( 'Display thumbs','shoestrap_nw'); ?>
+				</td>
 			</tr>
 
 			<tr>
-				<td><?php _e( 'Display meta','shoestrap_nw'); ?></td>
-				<td><input class="checkbox" type="checkbox" <?php checked(isset( $instance['meta']) ? $instance['meta'] : 0  ); ?> id="<?php echo $this->get_field_id( 'meta' ); ?>" name="<?php echo $this->get_field_name( 'meta' ); ?>" /></td>
+				<td colspan="2">
+					<input class="checkbox" type="checkbox" <?php checked(isset( $instance['meta']) ? $instance['meta'] : 0  ); ?> id="<?php echo $this->get_field_id( 'meta' ); ?>" name="<?php echo $this->get_field_name( 'meta' ); ?>" />
+					<?php _e( 'Display meta','shoestrap_nw'); ?>
+				</td>
 			</tr>
 		</table>
 		<?php
