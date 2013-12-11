@@ -202,6 +202,23 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	}
 }
 
-function shoestrap_nw_posts_loop() {
+function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '' $posts_per_page = 5, $offset = 0 ) {
 
+	// Start the arguments
+	$args = array(
+		'post_type'      => $post_type,
+		'posts_per_page' => $number,
+		'offset'         => $offset,
+	);
+	// Add taxonomy argument if one is present
+	if ( $taxonomy ) :
+		$args['taxonomy'] = $taxonomy;
+	endif;
+
+	// Add term argument if one is present
+	if ( $term ) :
+		$args['terms'] = $term;
+	endif;
+
+	$query = new WP_Query( $args );
 }
