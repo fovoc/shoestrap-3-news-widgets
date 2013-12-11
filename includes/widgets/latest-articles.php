@@ -57,7 +57,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 		<div class="post-list list clearfix">
 			<?php
-				// TODO: The Query here
+				shoestrap_nw_posts_loop( $instance['post_type'], $instance['taxonomy'], $instance['term'], $instance['num'], $instance['offset'] );
 			?>
 		</div>
 		<?php
@@ -218,15 +218,24 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 		'posts_per_page' => $number,
 		'offset'         => $offset,
 	);
-	// Add taxonomy argument if one is present
-	if ( $taxonomy ) :
-		$args['taxonomy'] = $taxonomy;
-	endif;
 
 	// Add term argument if one is present
 	if ( $term ) :
 		$args['terms'] = $term;
 	endif;
 
-	$query = new WP_Query( $args );
+	// The Query
+	$the_query = new WP_Query( $args );
+
+	// The Loop
+	while ( $the_query->have_posts() ) :
+		$the_query->the_post();
+		echo '<li>' . get_the_title() . '</li>';
+	endwhile;
+
+	/* Restore original Post Data 
+	 * NB: Because we are using new WP_Query we aren't stomping on the 
+	 * original $wp_query and it does not need to be reset.
+	*/
+	wp_reset_postdata();
 }
