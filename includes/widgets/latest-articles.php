@@ -27,27 +27,15 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 		extract( $args );
 
-		$title    = apply_filters( 'widget_title', $instance['title'] );
-		$taxonomy = $instance['taxonomy'];
+		$title     = apply_filters( 'widget_title', $instance['title'] );
+		$post_type = $instance['post_type'];
+		$taxonomy  = $instance['taxonomy'];
 		$term      = $instance['term'];
-		$num      = $instance['num'];
-		$thumb    = $instance['thumb'];
-		$more     = $instance['more'];
-		$meta     = $instance['meta'];
-		$format   = $instance['format'];
-
-		// Hack for the 'All Categories' option
-		if ( $taxonomy == 'All Categories' ) :
-			$taxonomy = '';
-		endif;
-		
-		// Hack for the 'All Tags' option
-		if ( $term == 'All Tags' ) :
-			$term = '';
-		endif;
-
-		$more = false;
-		$post_types = array( 'post' );
+		$num       = $instance['num'];
+		$thumb     = $instance['thumb'];
+		$more      = $instance['more'];
+		$meta      = $instance['meta'];
+		$format    = $instance['format'];
 
 		echo $before_widget;
 
@@ -68,27 +56,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 		<div class="post-list list clearfix">
 			<?php
-				$args = array(
-					'suppress_filters' => true,
-					'posts_per_page'   => $num,
-					'order'            => 'DESC',
-					'order_by'         => 'date',
-					'post_type'        => $post_types,
-					'cat'              => $taxonomy,
-					'term_id'           => $term,
-				);
-
-				$format = array(
-					'thumb'  => $thumb,
-					'meta'   => $meta,
-					'format' => $format,
-					'width'  => 349,
-					'height' => 240,
-					'size'   => 'grid-post',
-					'title'  => 180
-				);
-
-				// The results here
+				// TODO: The Query here
 			?>
 		</div>
 		<?php
@@ -101,14 +69,15 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$instance = $old_instance;
 
 		/* Strip terms (if needed) and update the widget settings. */
-		$instance['title']    = strip_tags( $new_instance['title'] );
-		$instance['taxonomy'] = strip_tags( $new_instance['taxonomy'] );
-		$instance['term']     = strip_tags( $new_instance['term'] );
-		$instance['num']      = strip_tags( $new_instance['num'] );
-		$instance['thumb']    = isset( $new_instance['thumb'] );
-		$instance['meta']     = isset( $new_instance['meta'] );
-		$instance['more']     = isset( $new_instance['more'] );
-		$instance['format']   = strip_tags( $new_instance['format'] );
+		$instance['title']     = strip_tags( $new_instance['title'] );
+		$instance['post_type'] = strip_tags( $new_instance['post_type'] );
+		$instance['taxonomy']  = strip_tags( $new_instance['taxonomy'] );
+		$instance['term']      = strip_tags( $new_instance['term'] );
+		$instance['num']       = strip_tags( $new_instance['num'] );
+		$instance['thumb']     = isset( $new_instance['thumb'] );
+		$instance['meta']      = isset( $new_instance['meta'] );
+		$instance['more']      = isset( $new_instance['more'] );
+		$instance['format']    = strip_tags( $new_instance['format'] );
 
 		return $instance;
 	}
@@ -116,15 +85,16 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	function form( $instance ) {
 
 		$defaults = array(
-			'title'    => 'Latest Articles',
-			'taxonomy' => 'category',
-			'term'     => 'shoestrap_nw_all_terms',
-			'num'      => 5,
-			'thumb'    => true,
-			'more'     => true,
-			'meta'     => true,
-			'overlay'  => false,
-			'format'   => 'first'
+			'title'     => 'Latest Articles',
+			'post_type' => 'post',
+			'taxonomy'  => 'category',
+			'term'      => 'shoestrap_nw_all_terms',
+			'num'       => 5,
+			'thumb'     => true,
+			'more'      => true,
+			'meta'      => true,
+			'overlay'   => false,
+			'format'    => 'first'
 		);
 
 		$instance = wp_parse_args( ( array ) $instance, $defaults ); ?>
@@ -148,10 +118,25 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			</tr>
 
 			<tr>
+				<td><?php _e( 'Post Type:','shoestrap_nw'); ?></td>
+				<td>
+					<select name="<?php echo $this->get_field_name( 'post_type' ); ?>">
+						<?php $post_types = get_post_types( array( 'public' => true, ), 'names' ); ?>
+						<?php foreach ( $post_types as $post_type ) : ?>
+							<?php $selected = ( $instance['post_type'] == $post_type ) ? 'selected' : ''; ?>
+							<option <?php echo $selected; ?> value="<?php echo $post_type; ?>">
+								<?php echo $post_type; ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+				</td>
+			</tr>
+
+			<tr>
 				<td><?php _e( 'Taxonomy:','shoestrap_nw'); ?></td>
 				<td>
 					<select name="<?php echo $this->get_field_name( 'taxonomy' ); ?>">
-						<?php $taxonomies = get_taxonomies( array( 'public' => true ), 'objects' ); ?>
+						<?php $taxonomies = get_object_taxonomies( $instance['post_type'], 'objects' ); ?>
 						<?php foreach ( $taxonomies as $taxonomy ) : ?>
 							<?php $selected = ( $instance['taxonomy'] == $taxonomy->name ) ? 'selected' : ''; ?>
 							<option <?php echo $selected; ?> value="<?php echo $taxonomy->name; ?>">
