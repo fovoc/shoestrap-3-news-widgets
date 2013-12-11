@@ -25,4 +25,10 @@ endif;
 
 if ( file_exists( get_template_directory() . '/lib/modules/load.modules.php' ) ) :
 	require_once get_template_directory() . '/lib/modules/load.modules.php';
+	include_once( S3NW_PLUGIN_DIR . 'includes/widgets/latest-articles.php' );
 endif;
+
+function shoestrap_news_widgets() {
+	register_widget( 'shoestrap_news_widget_latest_articles' );
+}
+add_action( 'widgets_init', 'shoestrap_news_widgets' );
