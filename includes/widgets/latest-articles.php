@@ -292,7 +292,7 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 							<?php elseif ( $post_title_size == 'h4' ) : ?>
 								<h4 class="media-heading">
 							<?php else : ?>
-								<h5 class="media-heading">
+								<strong class="media-heading">
 							<?php endif; ?>
 								<?php the_title(); ?></h4>
 							<?php if ( $post_title_size == 'h3' ) : ?>
@@ -300,7 +300,7 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 							<?php elseif ( $post_title_size == 'h4' ) : ?>
 								</h4>
 							<?php else : ?>
-								</h5>
+								</strong><br />
 							<?php endif; ?>
 						</a>
 				<?php endif; ?>
@@ -318,7 +318,7 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 						<?php elseif ( $post_title_size == 'h4' ) : ?>
 							<h4 class="media-heading">
 						<?php else : ?>
-							<strong>
+							<strong class="media-heading">
 						<?php endif; ?>
 							<?php the_title(); ?></h4>
 						<?php if ( $post_title_size == 'h3' ) : ?>
@@ -326,7 +326,7 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 						<?php elseif ( $post_title_size == 'h4' ) : ?>
 							</h4>
 						<?php else : ?>
-							</strong>
+							</strong><br />
 						<?php endif; ?>
 					</a>
 					<?php echo shoestrap_nw_excerpt( $excerpt_length, $read_more_text ); ?>
