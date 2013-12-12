@@ -38,6 +38,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$thumb_width    = $instance['thumb_width'];
 		$thumb_height   = $instance['thumb_height'];
 		$excerpt_length = $instance['excerpt_length'];
+		$more_text      = $instance['more_text'];
 
 		echo $before_widget;
 
@@ -64,7 +65,8 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 					$instance['thumb_float'],
 					$instance['thumb_width'],
 					$instance['thumb_height'],
-					$instance['excerpt_length']
+					$instance['excerpt_length'],
+					$instance['more_text']
 				);
 			?>
 		</div>
@@ -87,6 +89,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$instance['thumb_width']    = strip_tags( $new_instance['thumb_width'] );
 		$instance['thumb_height']   = strip_tags( $new_instance['thumb_height'] );
 		$instance['excerpt_length'] = strip_tags( $new_instance['excerpt_length'] );
+		$instance['more_text']      = strip_tags( $new_instance['more_text'] );
 
 		return $instance;
 	}
@@ -104,7 +107,8 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			'thumb_float'    => 1,
 			'thumb_width'    => 150,
 			'thumb_height'   => 100,
-			'excerpt_length' => 20
+			'excerpt_length' => 20,
+			'more_text'      => __( 'Read More', 'shoestrap_nw' )
 		);
 
 		$instance = wp_parse_args( ( array ) $instance, $defaults ); ?>
@@ -184,6 +188,11 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			</tr>
 
 			<tr>
+				<td><?php _e( 'Read More text:','shoestrap_nw'); ?></td>
+				<td><input id="<?php echo $this->get_field_id( 'more_text' ); ?>" name="<?php echo $this->get_field_name( 'more_text' ); ?>" value="<?php echo $instance['more_text']; ?>" class="widefat" type="text" /></td>
+			</tr>
+
+			<tr>
 				<td colspan="2">
 					<input class="checkbox" type="checkbox" <?php checked(isset( $instance['thumb']) ? $instance['thumb'] : 0  ); ?> id="<?php echo $this->get_field_id( 'thumb' ); ?>" name="<?php echo $this->get_field_name( 'thumb' ); ?>" />
 					<?php _e( 'Display thumbs','shoestrap_nw'); ?>
@@ -215,7 +224,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	}
 }
 
-function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0, $thumb = false, $thumb_float = true, $thumb_width = 150, $thumb_height = 100, $excerpt_length = 20 ) {
+function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0, $thumb = false, $thumb_float = true, $thumb_width = 150, $thumb_height = 100, $excerpt_length = 20, $read_more_text = '...' ) {
 
 	// Set-Up the taxonomy query
 	if ( $term != 'shoestrap_nw_all_terms' ) :
@@ -238,6 +247,8 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 		'offset'         => $offset,
 	);
 
+	$thumb_class = ( $thumb_float ) ? 'class="pull-left"' : '';
+
 	// The Query
 	$the_query = new WP_Query( $args );
 
@@ -255,13 +266,21 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 
 		<div class="media">
 			<?php if ( $thumb && has_post_thumbnail() ) : ?>
-				<a href="<?php the_permalink(); ?>">
+				<?php if ( !$thumb_float ) : ?>
+					<div class="media-body">
+						<a href="<?php the_permalink(); ?>"><h4 class="media-heading"><?php the_title(); ?></h4></a>
+				<?php endif; ?>
+				<a <?php echo $thumb_class; ?> href="<?php the_permalink(); ?>">
 					<img class="media-object" src="<?php echo $image['url']; ?>" alt="<?php the_title(); ?>">
 				</a>
 			<?php endif; ?>
-			<div class="media-body">
-				<h4 class="media-heading"><?php the_title(); ?></h4>
-				<?php echo shoestrap_nw_excerpt( $excerpt_length ); ?>
+			<?php if ( $thumb && has_post_thumbnail() && !$thumb_float ) : ?>
+				<?php echo shoestrap_nw_excerpt( $excerpt_length, $read_more_text ); ?>
+			<?php else : ?>
+				<div class="media-body">
+					<a href="<?php the_permalink(); ?>"><h4 class="media-heading"><?php the_title(); ?></h4></a>
+					<?php echo shoestrap_nw_excerpt( $excerpt_length, $read_more_text ); ?>
+			<?php endif; ?>
 			</div>
 		</div>
 		<?php
@@ -275,12 +294,12 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 }
 
 
-function shoestrap_nw_excerpt( $limit = 20 ) {
+function shoestrap_nw_excerpt( $limit = 20, $read_more_text ) {
 	$excerpt = explode( ' ', get_the_excerpt(), $limit );
 
 	if ( count( $excerpt ) >= $limit ) :
 		array_pop( $excerpt );
-		$excerpt = implode( ' ', $excerpt ) . '...';
+		$excerpt = implode( ' ', $excerpt ) . ' <a href="' . get_post_permalink() . '">' . $read_more_text . '</a>';
 	else :
 		$excerpt = implode( ' ', $excerpt );
 	endif;
@@ -289,12 +308,12 @@ function shoestrap_nw_excerpt( $limit = 20 ) {
 	return $excerpt;
 }
 
-function shoestrap_nw_content( $limit ) {
+function shoestrap_nw_content( $limit, $read_more_text ) {
 	$content = explode( ' ', get_the_content(), $limit );
 
 	if ( count( $content ) >= $limit ) :
 		array_pop( $content );
-		$content = implode( ' ', $content ) . '...';
+		$content = implode( ' ', $content ) . ' <a href="' . get_post_permalink() . '">' . $read_more_text . '</a>';
 	else :
 		$content = implode( ' ', $content );
 	endif;
