@@ -27,18 +27,19 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 		extract( $args );
 
-		$title        = apply_filters( 'widget_title', $instance['title'] );
-		$post_type    = $instance['post_type'];
-		$taxonomy     = $instance['taxonomy'];
-		$term         = $instance['term'];
-		$per_page     = $instance['per_page'];
-		$offset       = $instance['offset'];
-		$thumb        = $instance['thumb'];
-		$thumb_width  = $instance['thumb_width'];
-		$thumb_height = $instance['thumb_height'];
-		$more         = $instance['more'];
-		$meta         = $instance['meta'];
-		$format       = $instance['format'];
+		$title          = apply_filters( 'widget_title', $instance['title'] );
+		$post_type      = $instance['post_type'];
+		$taxonomy       = $instance['taxonomy'];
+		$term           = $instance['term'];
+		$per_page       = $instance['per_page'];
+		$offset         = $instance['offset'];
+		$thumb          = $instance['thumb'];
+		$thumb_width    = $instance['thumb_width'];
+		$thumb_height   = $instance['thumb_height'];
+		$more           = $instance['more'];
+		$meta           = $instance['meta'];
+		$format         = $instance['format'];
+		$excerpt_length = $instance['excerpt_length'];
 
 		echo $before_widget;
 
@@ -70,7 +71,8 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 					$instance['format'],
 					$instance['thumb'],
 					$instance['thumb_width'],
-					$instance['thumb_height']
+					$instance['thumb_height'],
+					$instance['excerpt_length']
 				);
 			?>
 		</div>
@@ -84,18 +86,19 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$instance = $old_instance;
 
 		/* Strip terms (if needed) and update the widget settings. */
-		$instance['title']        = strip_tags( $new_instance['title'] );
-		$instance['post_type']    = strip_tags( $new_instance['post_type'] );
-		$instance['taxonomy']     = strip_tags( $new_instance['taxonomy'] );
-		$instance['term']         = strip_tags( $new_instance['term'] );
-		$instance['per_page']     = strip_tags( $new_instance['per_page'] );
-		$instance['offset']       = strip_tags( $new_instance['offset'] );
-		$instance['thumb']        = isset( $new_instance['thumb'] );
-		$instance['thumb_width']  = strip_tags( $new_instance['thumb_width'] );
-		$instance['thumb_height'] = strip_tags( $new_instance['thumb_height'] );
-		$instance['meta']         = isset( $new_instance['meta'] );
-		$instance['more']         = isset( $new_instance['more'] );
-		$instance['format']       = strip_tags( $new_instance['format'] );
+		$instance['title']          = strip_tags( $new_instance['title'] );
+		$instance['post_type']      = strip_tags( $new_instance['post_type'] );
+		$instance['taxonomy']       = strip_tags( $new_instance['taxonomy'] );
+		$instance['term']           = strip_tags( $new_instance['term'] );
+		$instance['per_page']       = strip_tags( $new_instance['per_page'] );
+		$instance['offset']         = strip_tags( $new_instance['offset'] );
+		$instance['thumb']          = isset( $new_instance['thumb'] );
+		$instance['thumb_width']    = strip_tags( $new_instance['thumb_width'] );
+		$instance['thumb_height']   = strip_tags( $new_instance['thumb_height'] );
+		$instance['meta']           = isset( $new_instance['meta'] );
+		$instance['more']           = isset( $new_instance['more'] );
+		$instance['format']         = strip_tags( $new_instance['format'] );
+		$instance['excerpt_length'] = strip_tags( $new_instance['excerpt_length'] );
 
 		return $instance;
 	}
@@ -103,19 +106,20 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	function form( $instance ) {
 
 		$defaults = array(
-			'title'        => 'Latest Articles',
-			'post_type'    => 'post',
-			'taxonomy'     => 'category',
-			'term'         => 'shoestrap_nw_all_terms',
-			'per_page'     => 5,
-			'offset'       => 0,
-			'thumb'        => true,
-			'thumb_width'  => 150,
-			'thumb_height' => 100,
-			'more'         => true,
-			'meta'         => true,
-			'overlay'      => false,
-			'format'       => 'first'
+			'title'          => 'Latest Articles',
+			'post_type'      => 'post',
+			'taxonomy'       => 'category',
+			'term'           => 'shoestrap_nw_all_terms',
+			'per_page'       => 5,
+			'offset'         => 0,
+			'thumb'          => true,
+			'thumb_width'    => 150,
+			'thumb_height'   => 100,
+			'more'           => true,
+			'meta'           => true,
+			'overlay'        => false,
+			'format'         => 'first',
+			'excerpt_length' => 20
 		);
 
 		$instance = wp_parse_args( ( array ) $instance, $defaults ); ?>
@@ -215,6 +219,11 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 				</td>
 			</tr>
 
+			<tr>
+				<td><?php _e( 'Excerpt Length','shoestrap_nw'); ?></td>
+				<td><input id="<?php echo $this->get_field_id( 'excerpt_length' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_length' ); ?>" value="<?php echo $instance['excerpt_length']; ?>" type="number" /></td>
+			</tr>
+
 			<?php if ( $instance['thumb'] ) : ?>
 				<tr>
 					<td><?php _e( 'Thumbnail Width','shoestrap_nw'); ?></td>
@@ -238,7 +247,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 	}
 }
 
-function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0, $format = 'titles', $thumb = false, $thumb_width = 150, $thumb_height = 100 ) {
+function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0, $format = 'titles', $thumb = false, $thumb_width = 150, $thumb_height = 100, $excerpt_length = 20 ) {
 
 	// Set-Up the taxonomy query
 	if ( $term != 'shoestrap_nw_all_terms' ) :
@@ -284,7 +293,7 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 			<?php endif; ?>
 			<div class="media-body">
 				<h4 class="media-heading"><?php the_title(); ?></h4>
-				<?php the_excerpt(); ?>
+				<?php echo shoestrap_nw_excerpt( $excerpt_length ); ?>
 			</div>
 		</div>
 		<?php
@@ -295,4 +304,35 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 	 * original $wp_query and it does not need to be reset.
 	*/
 	wp_reset_postdata();
+}
+
+
+function shoestrap_nw_excerpt( $limit = 20 ) {
+	$excerpt = explode( ' ', get_the_excerpt(), $limit );
+
+	if ( count( $excerpt ) >= $limit ) :
+		array_pop( $excerpt );
+		$excerpt = implode( ' ', $excerpt ) . '...';
+	else :
+		$excerpt = implode( ' ', $excerpt );
+	endif;
+
+	$excerpt = preg_replace( '`\[[^\]]*\]`', '', $excerpt );
+	return $excerpt;
+}
+
+function shoestrap_nw_content( $limit ) {
+	$content = explode( ' ', get_the_content(), $limit );
+
+	if ( count( $content ) >= $limit ) :
+		array_pop( $content );
+		$content = implode( ' ', $content ) . '...';
+	else :
+		$content = implode( ' ', $content );
+	endif;
+
+	$content = preg_replace( '/\[.+\]/', '', $content );
+	$content = apply_filters( 'the_content', $content );
+	$content = str_replace( ']]>', ']]&gt;', $content );
+	return $content;
 }
