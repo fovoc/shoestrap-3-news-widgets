@@ -58,7 +58,21 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		?>
 
 		<div class="post-list list clearfix">
-			<?php shoestrap_nw_posts_loop( $instance['post_type'], $instance['taxonomy'], $instance['term'], $instance['per_page'], $instance['offset'], $instance['format'], $instance['thumb'], $instance['thumb_width'], $instance['thumb_height'] ); ?>
+			<?php
+				// Call our custom Loop Function and pass all the arguments from the widget options.
+
+				shoestrap_nw_posts_loop(
+					$instance['post_type'],
+					$instance['taxonomy'],
+					$instance['term'],
+					$instance['per_page'],
+					$instance['offset'],
+					$instance['format'],
+					$instance['thumb'],
+					$instance['thumb_width'],
+					$instance['thumb_height']
+				);
+			?>
 		</div>
 		<?php
 
