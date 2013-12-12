@@ -26,11 +26,13 @@ endif;
 if ( file_exists( get_template_directory() . '/lib/modules/load.modules.php' ) ) :
 	require_once get_template_directory() . '/lib/modules/load.modules.php';
 	include_once( S3NW_PLUGIN_DIR . 'includes/widgets/latest-articles.php' );
+	include_once( S3NW_PLUGIN_DIR . 'includes/functions.loop.php' );
+	include_once( S3NW_PLUGIN_DIR . 'includes/functions.excerpts.php' );
 endif;
 
 // Include the resizing script ig it's not already loaded
 if ( !function_exists( 'matthewruddy_image_resize' ) ) :
-	include_once( S3NW_PLUGIN_DIR . 'includes/resize.php' );
+	include_once( S3NW_PLUGIN_DIR . 'includes/functions.resize.php' );
 endif;
 
 function shoestrap_news_widgets() {
