@@ -34,11 +34,9 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$per_page       = $instance['per_page'];
 		$offset         = $instance['offset'];
 		$thumb          = $instance['thumb'];
+		$thumb_float    = $instance['thumb_float'];
 		$thumb_width    = $instance['thumb_width'];
 		$thumb_height   = $instance['thumb_height'];
-		$more           = $instance['more'];
-		$meta           = $instance['meta'];
-		$format         = $instance['format'];
 		$excerpt_length = $instance['excerpt_length'];
 
 		echo $before_widget;
@@ -48,13 +46,7 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 			<h3><?php echo $title; ?></h3>
 
-			<?php if ( $more ) : ?>
-				<div class="widget-more hover-text">
-					<?php _e( 'See All', 'shoestrap_nw' ); ?>
-				</div>
-				<a class="hover-link" href="<?php echo $morelink; ?>"></a>
-			<?php endif;
-			echo $after_title;
+			<?php echo $after_title;
 		endif;
 		?>
 
@@ -68,18 +60,16 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 					$instance['term'],
 					$instance['per_page'],
 					$instance['offset'],
-					$instance['format'],
 					$instance['thumb'],
+					$instance['thumb_float'],
 					$instance['thumb_width'],
 					$instance['thumb_height'],
 					$instance['excerpt_length']
 				);
 			?>
 		</div>
-		<?php
-
-		wp_reset_query();
-		echo $after_widget;
+		<?php wp_reset_query(); ?>
+		<?php echo $after_widget;
 	}
 
 	function update( $new_instance, $old_instance ) {
@@ -93,11 +83,9 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		$instance['per_page']       = strip_tags( $new_instance['per_page'] );
 		$instance['offset']         = strip_tags( $new_instance['offset'] );
 		$instance['thumb']          = isset( $new_instance['thumb'] );
+		$instance['thumb_float']    = isset( $new_instance['thumb_float'] );
 		$instance['thumb_width']    = strip_tags( $new_instance['thumb_width'] );
 		$instance['thumb_height']   = strip_tags( $new_instance['thumb_height'] );
-		$instance['meta']           = isset( $new_instance['meta'] );
-		$instance['more']           = isset( $new_instance['more'] );
-		$instance['format']         = strip_tags( $new_instance['format'] );
 		$instance['excerpt_length'] = strip_tags( $new_instance['excerpt_length'] );
 
 		return $instance;
@@ -113,12 +101,9 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			'per_page'       => 5,
 			'offset'         => 0,
 			'thumb'          => true,
+			'thumb_float'    => 1,
 			'thumb_width'    => 150,
 			'thumb_height'   => 100,
-			'more'           => true,
-			'meta'           => true,
-			'overlay'        => false,
-			'format'         => 'first',
 			'excerpt_length' => 20
 		);
 
@@ -128,18 +113,6 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 		<input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" class="widefat" type="text" /></td>
 
 		<table style="margin-top: 10px;">
-			<tr>
-				<td><?php _e( 'Format:','shoestrap_nw'); ?></td>
-				<td>
-					<input class="radio" type="radio" <?php if($instance['format']=='small') { ?>checked <?php } ?>name="<?php echo $this->get_field_name( 'format' ); ?>" value="small" id="<?php echo $this->get_field_id( 'format' ); ?>_small" /><?php _e( 'Small','shoestrap_nw'); ?>
-					<br />
-					<input class="radio" type="radio" <?php if($instance['format']=='large') { ?>checked <?php } ?>name="<?php echo $this->get_field_name( 'format' ); ?>" value="large" id="<?php echo $this->get_field_id( 'format' ); ?>_large" /><?php _e( 'Large','shoestrap_nw'); ?>
-					<br />
-					<input class="radio" type="radio" <?php if($instance['format']=='first') { ?>checked <?php } ?>name="<?php echo $this->get_field_name( 'format' ); ?>" value="first" id="<?php echo $this->get_field_id( 'format' ); ?>_first" /><?php _e( 'Large First Article','shoestrap_nw'); ?>
-					<br />
-				</td>
-			</tr>
-
 			<tr>
 				<td><?php _e( 'Post Type:','shoestrap_nw'); ?></td>
 				<td>
@@ -207,13 +180,6 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 			<tr>
 				<td colspan="2">
-					<input class="checkbox" type="checkbox" <?php checked( isset( $instance['more'] ) ? $instance['more'] : 0  ); ?> id="<?php echo $this->get_field_id( 'more' ); ?>" name="<?php echo $this->get_field_name( 'more' ); ?>" />
-					<?php _e( 'Display "See All" link in header','shoestrap_nw'); ?>
-				</td>
-			</tr>
-
-			<tr>
-				<td colspan="2">
 					<input class="checkbox" type="checkbox" <?php checked(isset( $instance['thumb']) ? $instance['thumb'] : 0  ); ?> id="<?php echo $this->get_field_id( 'thumb' ); ?>" name="<?php echo $this->get_field_name( 'thumb' ); ?>" />
 					<?php _e( 'Display thumbs','shoestrap_nw'); ?>
 				</td>
@@ -225,6 +191,14 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			</tr>
 
 			<?php if ( $instance['thumb'] ) : ?>
+
+				<tr>
+					<td colspan="2">
+						<input class="checkbox" type="checkbox" <?php checked(isset( $instance['thumb_float']) ? $instance['thumb_float'] : 0  ); ?> id="<?php echo $this->get_field_id( 'thumb_float' ); ?>" name="<?php echo $this->get_field_name( 'thumb_float' ); ?>" />
+						<?php _e( 'Float Tumbnails Left','shoestrap_nw'); ?>
+					</td>
+				</tr>
+
 				<tr>
 					<td><?php _e( 'Thumbnail Width','shoestrap_nw'); ?></td>
 					<td><input id="<?php echo $this->get_field_id( 'thumb_width' ); ?>" name="<?php echo $this->get_field_name( 'thumb_width' ); ?>" value="<?php echo $instance['thumb_width']; ?>" type="number" /></td>
@@ -236,18 +210,12 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 				</tr>
 			<?php endif; ?>
 
-			<tr>
-				<td colspan="2">
-					<input class="checkbox" type="checkbox" <?php checked(isset( $instance['meta']) ? $instance['meta'] : 0  ); ?> id="<?php echo $this->get_field_id( 'meta' ); ?>" name="<?php echo $this->get_field_name( 'meta' ); ?>" />
-					<?php _e( 'Display meta','shoestrap_nw'); ?>
-				</td>
-			</tr>
 		</table>
 		<?php
 	}
 }
 
-function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0, $format = 'titles', $thumb = false, $thumb_width = 150, $thumb_height = 100, $excerpt_length = 20 ) {
+function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '', $posts_per_page = 5, $offset = 0, $thumb = false, $thumb_float = true, $thumb_width = 150, $thumb_height = 100, $excerpt_length = 20 ) {
 
 	// Set-Up the taxonomy query
 	if ( $term != 'shoestrap_nw_all_terms' ) :
@@ -287,7 +255,7 @@ function shoestrap_nw_posts_loop( $post_type = 'post', $taxonomy = '', $term = '
 
 		<div class="media">
 			<?php if ( $thumb && has_post_thumbnail() ) : ?>
-				<a class="pull-left" href="<?php the_permalink(); ?>">
+				<a href="<?php the_permalink(); ?>">
 					<img class="media-object" src="<?php echo $image['url']; ?>" alt="<?php the_title(); ?>">
 				</a>
 			<?php endif; ?>
