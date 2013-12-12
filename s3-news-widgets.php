@@ -25,7 +25,7 @@ endif;
 
 if ( file_exists( get_template_directory() . '/lib/modules/load.modules.php' ) ) :
 	require_once get_template_directory() . '/lib/modules/load.modules.php';
-	include_once( S3NW_PLUGIN_DIR . 'includes/widgets/latest-articles.php' );
+	include_once( S3NW_PLUGIN_DIR . 'includes/widget.posts-query.php' );
 	include_once( S3NW_PLUGIN_DIR . 'includes/functions.loop.php' );
 	include_once( S3NW_PLUGIN_DIR . 'includes/functions.excerpts.php' );
 endif;
