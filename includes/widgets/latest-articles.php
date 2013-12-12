@@ -179,15 +179,15 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 			</tr>
 
 			<tr>
+				<td><?php _e( 'Excerpt Length','shoestrap_nw'); ?></td>
+				<td><input id="<?php echo $this->get_field_id( 'excerpt_length' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_length' ); ?>" value="<?php echo $instance['excerpt_length']; ?>" type="number" /></td>
+			</tr>
+
+			<tr>
 				<td colspan="2">
 					<input class="checkbox" type="checkbox" <?php checked(isset( $instance['thumb']) ? $instance['thumb'] : 0  ); ?> id="<?php echo $this->get_field_id( 'thumb' ); ?>" name="<?php echo $this->get_field_name( 'thumb' ); ?>" />
 					<?php _e( 'Display thumbs','shoestrap_nw'); ?>
 				</td>
-			</tr>
-
-			<tr>
-				<td><?php _e( 'Excerpt Length','shoestrap_nw'); ?></td>
-				<td><input id="<?php echo $this->get_field_id( 'excerpt_length' ); ?>" name="<?php echo $this->get_field_name( 'excerpt_length' ); ?>" value="<?php echo $instance['excerpt_length']; ?>" type="number" /></td>
 			</tr>
 
 			<?php if ( $instance['thumb'] ) : ?>
