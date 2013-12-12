@@ -28,6 +28,11 @@ if ( file_exists( get_template_directory() . '/lib/modules/load.modules.php' ) )
 	include_once( S3NW_PLUGIN_DIR . 'includes/widgets/latest-articles.php' );
 endif;
 
+// Include the resizing script ig it's not already loaded
+if ( !function_exists( 'matthewruddy_image_resize' ) ) :
+	include_once( S3NW_PLUGIN_DIR . 'includes/resize.php' );
+endif;
+
 function shoestrap_news_widgets() {
 	register_widget( 'shoestrap_news_widget_latest_articles' );
 }
