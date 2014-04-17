@@ -2,6 +2,7 @@
 
 
 class shoestrap_news_widget_latest_articles extends WP_Widget {
+
 	function shoestrap_news_widget_latest_articles() {
 		
 		$widget_ops = array(
@@ -43,37 +44,36 @@ class shoestrap_news_widget_latest_articles extends WP_Widget {
 
 		echo $before_widget;
 
-		if ( $title ) :
-			echo $before_title; ?>
+		if ( $title ) {
+			echo $before_title;
+			echo '<h3>' . $title . '</h3>';
+			echo $after_title;
+		}
 
-			<h3><?php echo $title; ?></h3>
+		echo '<div class="post-list list clearfix">';
 
-			<?php echo $after_title;
-		endif;
-		?>
+		// Call our custom Loop Function and pass all the arguments from the widget options.
 
-		<div class="post-list list clearfix">
-			<?php
-				// Call our custom Loop Function and pass all the arguments from the widget options.
+			ssnw_posts_loop(
+				$instance['post_type'],
+				$instance['taxonomy'],
+				$instance['term'],
+				$instance['per_page'],
+				$instance['offset'],
+				$instance['thumb'],
+				$instance['thumb_float'],
+				$instance['thumb_width'],
+				$instance['thumb_height'],
+				$instance['excerpt_length'],
+				$instance['more_text'],
+				$instance['post_title_size']
+			);
+		
+		echo '</div>';
 
-				shoestrap_nw_posts_loop(
-					$instance['post_type'],
-					$instance['taxonomy'],
-					$instance['term'],
-					$instance['per_page'],
-					$instance['offset'],
-					$instance['thumb'],
-					$instance['thumb_float'],
-					$instance['thumb_width'],
-					$instance['thumb_height'],
-					$instance['excerpt_length'],
-					$instance['more_text'],
-					$instance['post_title_size']
-				);
-			?>
-		</div>
-		<?php wp_reset_query(); ?>
-		<?php echo $after_widget;
+		wp_reset_query();
+
+		echo $after_widget;
 	}
 
 	function update( $new_instance, $old_instance ) {

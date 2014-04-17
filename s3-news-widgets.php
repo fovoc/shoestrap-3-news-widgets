@@ -9,31 +9,29 @@ Author URI:  http://aristeides.com
 */
 
 // plugin folder url
-if ( !defined( 'S3NW_PLUGIN_URL' ) ) :
+if ( ! defined( 'S3NW_PLUGIN_URL' ) ) {
 	define( 'S3NW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-endif;
+}
 
 // plugin folder path
-if ( !defined( 'S3NW_PLUGIN_DIR' ) ) :
+if ( ! defined( 'S3NW_PLUGIN_DIR' ) ) {
 	define( 'S3NW_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-endif;
+}
 
 // plugin root file
-if ( !defined( 'S3NW_PLUGIN_FILE' ) ) :
+if ( ! defined( 'S3NW_PLUGIN_FILE' ) ) {
 	define( 'S3NW_PLUGIN_FILE', __FILE__ );
-endif;
+}
 
-if ( file_exists( get_template_directory() . '/lib/modules/load.modules.php' ) ) :
-	require_once get_template_directory() . '/lib/modules/load.modules.php';
+/**
+ * Include plugin files
+ */
+function ssnw_include_files() {
 	include_once( S3NW_PLUGIN_DIR . 'includes/widget.posts-query.php' );
 	include_once( S3NW_PLUGIN_DIR . 'includes/functions.loop.php' );
 	include_once( S3NW_PLUGIN_DIR . 'includes/functions.excerpts.php' );
-endif;
-
-// Include the resizing script ig it's not already loaded
-if ( !function_exists( 'matthewruddy_image_resize' ) ) :
-	include_once( S3NW_PLUGIN_DIR . 'includes/functions.resize.php' );
-endif;
+}
+add_action( 'shoestrap_include_files', 'ssnw_include_files' );
 
 function shoestrap_news_widgets() {
 	register_widget( 'shoestrap_news_widget_latest_articles' );
